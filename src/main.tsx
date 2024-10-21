@@ -6,7 +6,7 @@ import Layout from './layout/Main/Layout';
 import { RequireAuth } from './helpers/RequireAuth';
 import Notes from './pages/Notes/Notes';
 import Note from './pages/Note/Note';
-import ErrorPage from './pages/Error/Error';
+import NotFound from './pages/NotFound/NotFound';
 import AuthPage from './pages/Auth/Auth';
 import AddNote from './components/AddNote/AddNote';
 
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <ErrorPage />
+    element: <NotFound />
   }
 ]);
 
