@@ -12,15 +12,11 @@ const Auth: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const handleAuth = async (endpoint: string, userData: object) => {
         try {
-            console.log('Sending login data:', { email, password });
-            const response = await api.post('/auth/login', {
-                email,
-                password,
-            });
+            const response = await api.post(endpoint, userData);
             const data = response.data;
+
             if (data.accessToken) {
                 localStorage.setItem('access_token', data.accessToken);
                 Cookies.set('refresh_token', data.refreshToken, {
@@ -29,42 +25,23 @@ const Auth: React.FC = () => {
                     sameSite: 'Strict',
                 });
                 localStorage.setItem('user', JSON.stringify(data.user));
-                console.log('Success', data);
                 navigate('/');
             } else {
-                console.log('Authentication failed:', data.message);
+                console.error(`${endpoint} failed:`, data.message);
             }
         } catch (error) {
-            console.log('Error', error);
+            console.error('Error', error);
         }
     };
 
-    const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
+    const handleLogin = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        try {
-            const response = await api.post('/auth/register', {
-                name,
-                surname,
-                email,
-                password,
-            });
-            const data = response.data;
-            if (data.accessToken) {
-                localStorage.setItem('access_token', data.accessToken);
-                Cookies.set('refresh_token', data.refreshToken, {
-                    secure: true,
-                    httpOnly: false,
-                    sameSite: 'Strict',
-                });
-                localStorage.setItem('user', JSON.stringify(data.user));
-                console.log('Success', data);
-                navigate('/');
-            } else {
-                console.log('Registration failed:', data.message);
-            }
-        } catch (error) {
-            console.log('Error', error);
-        }
+        handleAuth('/auth/login', { email, password });
+    };
+
+    const handleRegister = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        handleAuth('/auth/register', { name, surname, email, password });
     };
 
     return (
@@ -86,73 +63,51 @@ const Auth: React.FC = () => {
                             Зарегистрироваться
                         </button>
                     </div>
-                    {!isRegistering ? (
-                        <form onSubmit={handleLogin}>
-                            <div className={styles.inputGroup}>
-                                <input
-                                    type="text"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Электронная почта"
-                                    className={styles.input}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Пароль"
-                                    className={styles.input}
-                                />
-                            </div>
-                            <button type="submit" className={styles.submitButton}>
-                                Вход
-                            </button>
-                        </form>
-                    ) : (
-                        <form onSubmit={handleRegister}>
-                            <div className={styles.inputGroup}>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder="Имя"
-                                    className={styles.input}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <input
-                                    type="text"
-                                    value={surname}
-                                    onChange={(e) => setSurname(e.target.value)}
-                                    placeholder="Фамилия"
-                                    className={styles.input}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <input
-                                    type="text"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Электронная почта"
-                                    className={styles.input}
-                                />
-                            </div>
-                            <div className={styles.inputGroup}>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Пароль"
-                                    className={styles.input}
-                                />
-                            </div>
-                            <button type="submit" className={styles.submitButton}>
-                                Зарегистрироваться
-                            </button>
-                        </form>
-                    )}
+                    <form onSubmit={isRegistering ? handleRegister : handleLogin}>
+                        {isRegistering && (
+                            <>
+                                <div className={styles.inputGroup}>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder="Имя"
+                                        className={styles.input}
+                                    />
+                                </div>
+                                <div className={styles.inputGroup}>
+                                    <input
+                                        type="text"
+                                        value={surname}
+                                        onChange={(e) => setSurname(e.target.value)}
+                                        placeholder="Фамилия"
+                                        className={styles.input}
+                                    />
+                                </div>
+                            </>
+                        )}
+                        <div className={styles.inputGroup}>
+                            <input
+                                type="text"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Электронная почта"
+                                className={styles.input}
+                            />
+                        </div>
+                        <div className={styles.inputGroup}>
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Пароль"
+                                className={styles.input}
+                            />
+                        </div>
+                        <button type="submit" className={styles.submitButton}>
+                            {isRegistering ? 'Зарегистрироваться' : 'Вход'}
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

@@ -38,6 +38,7 @@
   border-radius: 4px;
   margin-bottom: 20px;
   transition: border 0.3s;
+  resize: none;
 }
 
 .textarea:focus {

@@ -1,13 +1,12 @@
 import { useEffect, useState, FC } from 'react';
-import styles from './Notes.module.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import api from '../../helpers/api';
 import { Note as NoteInterface } from '../../interfaces/note.interface';
-
+import styles from './Notes.module.css';
 
 const fetchNotes = async (): Promise<NoteInterface[]> => {
-    const response = await api.get<NoteInterface[]>('/notes'); // Используем ваш экземпляр API
+    const response = await api.get<NoteInterface[]>('/notes');
     return response.data;
 };
 
@@ -18,6 +17,7 @@ const Notes: FC = () => {
 
     useEffect(() => {
         const loadNotes = async () => {
+            setLoading(true);
             try {
                 const fetchedNotes = await fetchNotes();
                 setNotes(fetchedNotes);
@@ -36,7 +36,7 @@ const Notes: FC = () => {
     }, []);
 
     if (loading) {
-        return <p>Loading notes...</p>;
+        return <p>Загрузка заметки...</p>;
     }
 
     if (error) {

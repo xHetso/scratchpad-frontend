@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './Note.module.css';
 import api from '../../helpers/api';
 import { Note as NoteInterface } from '../../interfaces/note.interface';
-
 
 const Note = () => {
     const { id } = useParams<{ id: string }>();
@@ -11,16 +10,12 @@ const Note = () => {
     const [note, setNote] = useState<NoteInterface | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [title, setTitle] = useState<string>('');
-    const [content, setContent] = useState<string>('');
 
     useEffect(() => {
         const fetchNote = async () => {
             try {
                 const response = await api.get<NoteInterface>(`/notes/${id}`);
                 setNote(response.data);
-                setTitle(response.data.title);
-                setContent(response.data.content);
             } catch {
                 setError('Ошибка при получении заметки');
             } finally {
@@ -31,19 +26,21 @@ const Note = () => {
         fetchNote();
     }, [id]);
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
+        if (!note) return;
+
         try {
             await api.put<NoteInterface>(`/notes/${id}`, {
-                title,
-                content,
+                title: note.title,
+                content: note.content,
             });
             navigate('/');
         } catch {
             setError('Ошибка при обновлении заметки');
         }
-    };
+    }, [note, id, navigate]);
 
-    const handleDelete = async () => {
+    const handleDelete = useCallback(async () => {
         if (window.confirm('Вы уверены, что хотите удалить эту заметку?')) {
             try {
                 await api.delete(`/notes/${id}`);
@@ -51,6 +48,12 @@ const Note = () => {
             } catch {
                 setError('Ошибка при удалении заметки');
             }
+        }
+    }, [id, navigate]);
+
+    const handleChange = (field: 'title' | 'content', value: string) => {
+        if (note) {
+            setNote({ ...note, [field]: value });
         }
     };
 
@@ -68,23 +71,19 @@ const Note = () => {
 
     return (
         <div className={styles.container}>
-            <p className={styles.title}>
-                Название
-            </p>
+            <p className={styles.title}>Название</p>
             <input
                 type="text"
                 className={styles.input}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                value={note.title}
+                onChange={(e) => handleChange('title', e.target.value)}
                 placeholder="Заголовок"
             />
-            <p className={styles.title}>
-                Текст
-            </p>
+            <p className={styles.title}>Текст</p>
             <textarea
                 className={styles.textarea}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
+                value={note.content}
+                onChange={(e) => handleChange('content', e.target.value)}
                 placeholder="Содержимое заметки"
             />
             <p className={styles.title}>Создано: {new Date(note.createdAt).toLocaleString()}</p>
