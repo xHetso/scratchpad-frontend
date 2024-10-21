@@ -6,7 +6,7 @@ import axios, {
 import Cookies from "js-cookie";
 
 const api = axios.create({
-  baseURL: "http://localhost:4200/api",
+  baseURL: "https://scratchpad-backend.onrender.com",
   withCredentials: true,
 });
 
