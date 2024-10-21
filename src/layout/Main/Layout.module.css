@@ -1,0 +1,10 @@
+.main-layout {
+  display: flex;
+  min-height: 100vh;
+  gap: 20px;
+}
+
+.layout-content {
+  width: 100%;
+  padding: 20px;
+}

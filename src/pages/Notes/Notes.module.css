@@ -1,0 +1,43 @@
+.container {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.note {
+  flex: 0 0 calc(25% - 16px);
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  transition: background-color 0.3s, transform 0.3s;
+  min-height: 150px;
+}
+
+.note:hover {
+  background-color: var(--primary-hover-color);
+  color: white;
+  transform: scale(1.05);
+}
+
+.note h3,
+.note p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 350px;
+}
+
+.addNoteButton {
+  display: inline-block;
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: var(--primary-color); /* Зеленый цвет */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.addNoteButton:hover {
+  background-color: var(--primary-hover-color); /* Темнее при наведении */
+}
