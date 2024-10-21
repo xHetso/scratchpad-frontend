@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import styles from './Navigation.module.css'; // Импортируйте CSS-модуль
+import styles from './Navigation.module.css';
 import NavProfile from '../NavProfile/NavProfile';
 
 const Navigation = () => {

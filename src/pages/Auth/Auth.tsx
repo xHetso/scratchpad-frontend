@@ -1,7 +1,7 @@
 import React, { FormEvent, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
-import styles from './Auth.module.css'; // Import the CSS module
+import styles from './Auth.module.css';
 import api from '../../helpers/api';
 
 const Auth: React.FC = () => {
