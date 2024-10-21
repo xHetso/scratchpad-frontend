@@ -3,22 +3,16 @@ import styles from './Notes.module.css';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import api from '../../helpers/api';
+import { Note as NoteInterface } from '../../interfaces/note.interface';
 
-interface Note {
-    _id: string;
-    title: string;
-    content: string;
-    userId: string;
-    createdAt: string;
-}
 
-const fetchNotes = async (): Promise<Note[]> => {
-    const response = await api.get<Note[]>('/notes'); // Используем ваш экземпляр API
+const fetchNotes = async (): Promise<NoteInterface[]> => {
+    const response = await api.get<NoteInterface[]>('/notes'); // Используем ваш экземпляр API
     return response.data;
 };
 
 const Notes: FC = () => {
-    const [notes, setNotes] = useState<Note[]>([]);
+    const [notes, setNotes] = useState<NoteInterface[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 

@@ -58,7 +58,7 @@ const Auth: React.FC = () => {
                 });
                 localStorage.setItem('user', JSON.stringify(data.user));
                 console.log('Success', data);
-                navigate('/'); // Redirect to home page
+                navigate('/');
             } else {
                 console.log('Registration failed:', data.message);
             }

@@ -2,19 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styles from './Note.module.css';
 import api from '../../helpers/api';
+import { Note as NoteInterface } from '../../interfaces/note.interface';
 
-interface Note {
-    _id: string;
-    title: string;
-    content: string;
-    userId: string;
-    createdAt: string;
-}
 
 const Note = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [note, setNote] = useState<Note | null>(null);
+    const [note, setNote] = useState<NoteInterface | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [title, setTitle] = useState<string>('');
@@ -23,7 +17,7 @@ const Note = () => {
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const response = await api.get<Note>(`/notes/${id}`);
+                const response = await api.get<NoteInterface>(`/notes/${id}`);
                 setNote(response.data);
                 setTitle(response.data.title);
                 setContent(response.data.content);
@@ -39,7 +33,7 @@ const Note = () => {
 
     const handleSave = async () => {
         try {
-            await api.put<Note>(`/notes/${id}`, {
+            await api.put<NoteInterface>(`/notes/${id}`, {
                 title,
                 content,
             });
