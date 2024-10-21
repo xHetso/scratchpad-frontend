@@ -1,7 +1,8 @@
 import { useEffect, useState, FC } from 'react';
-import axios from 'axios';
 import styles from './Notes.module.css';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import api from '../../helpers/api';
 
 interface Note {
     _id: string;
@@ -12,14 +13,7 @@ interface Note {
 }
 
 const fetchNotes = async (): Promise<Note[]> => {
-    const token = localStorage.getItem('access_token');
-
-    const response = await axios.get<Note[]>('http://localhost:4200/api/notes', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
-
+    const response = await api.get<Note[]>('/notes'); // Используем ваш экземпляр API
     return response.data;
 };
 
@@ -33,8 +27,12 @@ const Notes: FC = () => {
             try {
                 const fetchedNotes = await fetchNotes();
                 setNotes(fetchedNotes);
-            } catch {
-                setError('Error fetching notes');
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    setError(error.response?.data.message || 'Ошибка при загрузке заметок');
+                } else {
+                    setError('Ошибка при загрузке заметок');
+                }
             } finally {
                 setLoading(false);
             }

@@ -65,7 +65,12 @@
   margin-bottom: 20px;
 }
 
-.date {
+.title {
   color: white;
   font-size: 20px;
+}
+
+.buttons {
+  display: flex;
+  gap: 30px;
 }

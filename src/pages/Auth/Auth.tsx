@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import styles from './Auth.module.css'; // Import the CSS module
-import { PREFIX } from '../../helpers/API';
-
+import api from '../../helpers/api';
 
 const Auth: React.FC = () => {
     const navigate = useNavigate();
@@ -13,19 +12,16 @@ const Auth: React.FC = () => {
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             console.log('Sending login data:', { email, password });
-            const response = await fetch(`${PREFIX}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
+            const response = await api.post('/auth/login', {
+                email,
+                password,
             });
-            const data = await response.json();
-            if (response.ok && data.accessToken) {
+            const data = response.data;
+            if (data.accessToken) {
                 localStorage.setItem('access_token', data.accessToken);
                 Cookies.set('refresh_token', data.refreshToken, {
                     secure: true,
@@ -43,18 +39,17 @@ const Auth: React.FC = () => {
         }
     };
 
-    const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${PREFIX}/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, surname, email, password }),
+            const response = await api.post('/auth/register', {
+                name,
+                surname,
+                email,
+                password,
             });
-            const data = await response.json();
-            if (response.ok && data.accessToken) {
+            const data = response.data;
+            if (data.accessToken) {
                 localStorage.setItem('access_token', data.accessToken);
                 Cookies.set('refresh_token', data.refreshToken, {
                     secure: true,
