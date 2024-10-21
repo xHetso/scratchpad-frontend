@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import styles from './Note.module.css';
 import api from '../../helpers/api';
 import { Note as NoteInterface } from '../../interfaces/note.interface';
+import NoteForm from '../../components/NoteForm/NoteForm';
+import Button from '../../components/UI/Button/Button';
 
 const Note = () => {
     const { id } = useParams<{ id: string }>();
@@ -71,25 +73,16 @@ const Note = () => {
 
     return (
         <div className={styles.container}>
-            <p className={styles.title}>Название</p>
-            <input
-                type="text"
-                className={styles.input}
-                value={note.title}
-                onChange={(e) => handleChange('title', e.target.value)}
-                placeholder="Заголовок"
-            />
-            <p className={styles.title}>Текст</p>
-            <textarea
-                className={styles.textarea}
-                value={note.content}
-                onChange={(e) => handleChange('content', e.target.value)}
-                placeholder="Содержимое заметки"
+            <NoteForm
+                title={note.title}
+                content={note.content}
+                onTitleChange={(value) => handleChange('title', value)}
+                onContentChange={(value) => handleChange('content', value)}
             />
             <p className={styles.title}>Создано: {new Date(note.createdAt).toLocaleString()}</p>
             <div className={styles.buttons}>
-                <button className={styles.button} onClick={handleSave}>Сохранить</button>
-                <button className={styles.button} onClick={handleDelete}>Удалить</button>
+                <Button onClick={handleSave}>Сохранить</Button>
+                <Button onClick={handleDelete}>Удалить</Button>
             </div>
         </div>
     );

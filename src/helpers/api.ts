@@ -7,7 +7,7 @@ import Cookies from "js-cookie";
 
 const api = axios.create({
   baseURL: "http://localhost:4200/api",
-  withCredentials: true, // Необходимо для автоматической отправки cookies
+  withCredentials: true,
 });
 
 interface AuthResponse {
@@ -16,18 +16,14 @@ interface AuthResponse {
   newRefreshToken: string;
 }
 
-// Функция для попытки обновления accessToken
 async function refreshAccessToken(): Promise<string> {
   try {
-    // Получаем refreshToken из кук
     const refreshToken = Cookies.get("refreshToken");
 
-    // Проверяем наличие refreshToken
     if (!refreshToken) {
       throw new Error("No refresh token available");
     }
 
-    // Отправляем запрос для получения нового accessToken
     const response: AxiosResponse<AuthResponse> = await api.post(
       "/auth/login/access-token",
       {
@@ -36,7 +32,6 @@ async function refreshAccessToken(): Promise<string> {
     );
     const { accessToken, user, newRefreshToken } = response.data;
 
-    // Сохраняем новый accessToken и данные пользователя
     localStorage.setItem("access_token", accessToken);
     localStorage.setItem("user", JSON.stringify(user));
     Cookies.set("refresh_token", newRefreshToken);
@@ -48,12 +43,10 @@ async function refreshAccessToken(): Promise<string> {
   }
 }
 
-// Перехватчик запросов для добавления accessToken в заголовки
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const accessToken = localStorage.getItem("access_token");
     if (accessToken) {
-      // Убедитесь, что заголовки правильно указаны
       config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
@@ -63,7 +56,6 @@ api.interceptors.request.use(
   }
 );
 
-// Перехватчик ответов для обработки истекшего accessToken
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
@@ -74,7 +66,7 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       const newAccessToken = await refreshAccessToken();
       originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-      return api(originalRequest); // Повторяем исходный запрос с новым accessToken
+      return api(originalRequest);
     }
     return Promise.reject(error);
   }

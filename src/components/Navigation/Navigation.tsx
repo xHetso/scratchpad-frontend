@@ -6,8 +6,6 @@ const Navigation = () => {
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         document.cookie = 'refresh_token=; Max-Age=0; path=/';
-
-        // Перенаправление на главную страницу после выхода
         window.location.href = '/';
     };
 
@@ -19,7 +17,6 @@ const Navigation = () => {
                     Главная
                 </Link>
             </div>
-            {/* Используем Link для выхода из системы */}
             <a className={styles['logout-button']} onClick={handleLogout}>
                 Выход
             </a>

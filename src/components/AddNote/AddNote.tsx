@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import styles from './AddNote.module.css';
 import api from '../../helpers/api';
 import axios from 'axios';
+import NoteForm from '../NoteForm/NoteForm';
+import Button from '../UI/Button/Button';
 
 const AddNote = () => {
     const navigate = useNavigate();
@@ -30,20 +32,13 @@ const AddNote = () => {
         <div className={styles.container}>
             <h1 className={styles.title}>Добавить новую заметку</h1>
             {error && <p className={styles.error}>{error}</p>}
-            <input
-                type="text"
-                className={styles.input}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Заголовок"
+            <NoteForm
+                title={title}
+                content={content}
+                onTitleChange={setTitle}
+                onContentChange={setContent}
             />
-            <textarea
-                className={styles.textarea}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Содержимое заметки"
-            />
-            <button className={styles.button} onClick={handleSave}>Сохранить</button>
+            <Button onClick={handleSave}>Сохранить</Button>
         </div>
     );
 };
