@@ -1,1 +1,1 @@
-export const PREFIX = "https://purpleschool.ru/pizza-api-demo";
+export const PREFIX = "http://localhost:4200/api";
